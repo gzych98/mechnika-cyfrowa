@@ -1,95 +1,108 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import React, { useEffect, useState } from 'react';
+// import Footer_pol from '../footer';
+import './styles-page.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import NavBar02 from '@/components/navbar/navbar';
+import Footer_pol from '@/components/footer/footer';
+
+const articles = [
+  {
+    id: 3,
+    title: 'Interactive Plot Point Picker',
+    date: '24 lipca 2024',
+    category: 'Data Science',
+    excerpt: 'Aplikacja umożliwia łatwe odczytywanie danych z wykresów: wczytujesz obraz, zaznaczasz punkty, przeliczasz je na rzeczywiste wartości i eksportujesz wyniki do pliku CSV.',
+    link: 'poradniki/image-to-chart',
+    image: 'image-to-chart.png'
+  },
+  {
+    id: 2,
+    title: 'Cheat Sheet',
+    date: '24 lipca 2024',
+    category: 'Python',
+    excerpt: 'Cheat Sheet zawierający najważniejsze informacje potrzebne do tworzenia prostych skryptów w Pythonie. Szybki przewodnik po zmiennych, operatorach, strukturach danych i innych podstawowych elementach języka.',
+    link: 'poradniki/cheat-sheet-python',
+    image: 'cheat-sheet.python.png'
+  },
+  {
+    id: 1,
+    title: 'Python dla inżyniera',
+    date: '21 lipca 2024',
+    category: 'Inżynieria',
+    excerpt: 'Podstawy programowania w Pythonie skierowane do inżynierów. Zawiera przykłady i zastosowania, które pomogą inżynierom efektywnie korzystać z Pythona w codziennej pracy.',
+    link: 'poradniki/podstawy-python',
+    image: 'python-basic.png'
+  },
+].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+
+const categories = ['Wszystkie', 'Data Science', 'Python', 'Inżynieria'];
+
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [selectedCategory, setSelectedCategory] = useState('Wszystkie');
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  const filteredArticles = selectedCategory === 'Wszystkie' ? articles : articles.filter(article => article.category === selectedCategory);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        } else {
+          entry.target.classList.remove('show');
+        }
+      });
+    });
+
+    const hiddenElements = document.querySelectorAll('.hidden');
+    hiddenElements.forEach(el => observer.observe(el));
+
+    return () => {
+      hiddenElements.forEach(el => observer.unobserve(el));
+    };
+  }, []);
+
+  return (
+    <main className="article-list-page">
+      <NavBar02 />
+      <div className="content-container">
+        <h1 className="hidden">Lista Artykułów</h1>
+        <h2 className="hidden">Odkryj, jak programowanie rewolucjonizuje świat inżynierii</h2>
+        <p className="intro-text hidden">Nasze poradniki zawierają również przykładowy kod z objaśnieniami, dzięki czemu możesz łatwo zrozumieć i zastosować przedstawione rozwiązania. Każdy fragment kodu można skopiować do swojego edytora tekstu, co znacznie ułatwia naukę i wdrażanie nowych umiejętności.</p>
+        <p className="intro-text hidden"><strong>Warto rozwijać swoje kompetencje, a dzięki naszym poradnikom z łatwością wejdziesz do świata automatyzacji i programowania w inżynierii. Nie czekaj, zacznij już dziś!</strong></p>
+
+        <div className="category-filter">
+          {categories.map(category => (
+            <button
+              key={category}
+              className={`category-button ${category === selectedCategory ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category}
+            </button>
+          ))}
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+
+        <ul className="article-list">
+          {filteredArticles.map(article => (
+            <li key={article.id} className="article-item hidden show">
+              <a href={article.link}>
+                <img src={article.image} alt={article.title} className="article-image" />
+                <div className="article-content">
+                  <span className={`article-category ${article.category.toLowerCase().replace(/\s+/g, '-')}`}>{article.category}</span>
+                  <h2>{article.title}</h2>
+                  <p className="article-date">{article.date}</p>
+                  <p>{article.excerpt}</p>
+                  <div className="read-more">Czytaj więcej</div>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <Footer_pol />
+    </main>
   );
 }
